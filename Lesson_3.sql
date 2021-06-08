@@ -55,6 +55,12 @@ ALTER TABLE price MODIFY product  NOT NULL;
 CREATE INDEX idx1 ON product (product_id);
 
 
-select * from product;
-select * from price;
 select * from managers;
+select * from price;
+select * from product;
+
+select * from man;
+
+truncate table managers;
+truncate table price;
+truncate table product;
