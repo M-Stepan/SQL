@@ -13,11 +13,11 @@ update sv set sv.dat =  to_date(sysdate-sv.nomer);
 update sv set sv.dat =  to_date('30.05.2021') where nomer>24;
 rollback;
 
--- СЃРѕС‚СЂСѓРґРЅРёРєРё РїСЂРѕРґР°Р»Рё РЅР° РѕР±С‰СѓСЋ СЃСѓРјРјСѓ
+-- сотрудники продали на общую сумму
 
 select status, managers, sum(summa) from sv group by status, managers order by status, managers;
 
--- СЃРѕС‚СЂСѓРґРЅРёРєРё РїСЂРѕРґР°Р»Рё РЅР° РѕР±С‰СѓСЋ СЃСѓРјРјСѓ + РјРёРЅРёРјР°Р»СЊРЅР°СЏ Рё РјР°РєСЃРёРјР°Р»СЊРЅС‹Рµ РїСЂРѕРґР°Р¶Рё
+-- сотрудники продали на общую сумму + минимальная и максимальные продажи
 
 select distinct
 status,
@@ -28,7 +28,7 @@ max(summa) over (partition by managers) max_sale
 from sv 
 order by status, managers;
 
--- Р±РµР· СЂР°Р·РіСЂР°РЅРёС‡РµРЅРёСЏ
+-- без разграничения
 
 select distinct
 status,
@@ -39,7 +39,7 @@ max(summa) over () max_sale,
 from sv 
 order by status, managers;
 
--- СЃСѓРјРјР° СЃ РЅР°СЂР°СЃС‚Р°СЋС‰РёРј РёС‚РѕРіРѕРј РїРѕ РїСЂРѕРґСѓРєС‚Р°Рј
+-- сумма с нарастающим итогом по продуктам
 
 select
 managers,
@@ -49,7 +49,7 @@ sum(summa) over (partition by managers order by product) sum_sale2
 from sv 
 order by   status, managers, sum_sale2;
 
--- СЃСѓРјРјР° СЃ РЅР°СЂР°СЃС‚Р°СЋС‰РёРј РёС‚РѕРіРѕРј РґРѕ С‚РµРєСѓС‰РµР№ Р·Р°РїРёСЃРё (РѕРєРЅР°: РѕС‚ РЅР°С‡Р°Р»Р° РґРѕ С‚РµРєСѓС‰РµР№, РѕС‚ С‚РµРєСѓС‰РµР№ РґРѕ РєРѕРЅС†Р°)
+-- сумма с нарастающим итогом до текущей записи (окна: от начала до текущей, от текущей до конца)
 
 select managers, product, sum(summa) over (partition by managers) sum_sale,
 sum(summa) over (partition by managers order by product range between unbounded preceding and current row) sum_sale2,
@@ -57,7 +57,7 @@ sum(summa) over (partition by managers order by product range between current ro
 from sv 
 order by  status, managers, sum_sale2;
 
--- РѕРєРЅР° rows Рё range
+-- окна rows и range
 
 select managers, product, dat, sum(summa) over (partition by managers) sum_sale,
 sum(summa) over (partition by managers order by dat range between unbounded preceding and current row) sum_range,
@@ -65,7 +65,7 @@ sum(summa) over (partition by managers order by dat rows between unbounded prece
 from sv 
 order by  status, managers, dat;
 
--- РїРµСЂРІРѕРµ Рё РїРѕСЃР»РµРґРЅРµРµ Р·РЅР°С‡РµРЅРёРµ
+-- первое и последнее значение
 
 select product, dat, summa,
 first_value(summa) 
@@ -83,7 +83,7 @@ range between 2 preceding and current row) last_range
 from sv 
 order by dat;
 
--- РёРЅС‚РµСЂРІР°Р»С‹ РїРѕ РІСЂРµРјРµРЅРё (year/month/day/hour/minute/second) numtoyminterval: year, month; numtodsinterval: day, hour, minute, second
+-- интервалы по времени (year/month/day/hour/minute/second) numtoyminterval: year, month; numtodsinterval: day, hour, minute, second
 
 select product, dat, summa,
 avg(summa) 
@@ -99,7 +99,7 @@ range between numtoyminterval (1, 'month') preceding and numtodsinterval (5, 'da
 from sv 
 order by dat;
 
--- СЂР°РЅР¶РёСЂРѕРІР°РЅРёРµ 
+-- ранжирование 
  
 select product, dat, summa, 
 row_number() over (order by dat desc) num_up,
@@ -109,27 +109,27 @@ dense_rank() over (order by dat) d_rank_summa
 from sv;
  
 
--- РїРѕРґСЃС‡РµС‚ РґРѕР»РµР№
+-- подсчет долей
  
 select distinct product, summa, 
 count(summa) over (partition by managers, product) count_sale, 
 sum(summa) over (partition by managers) sum_sale, 
 ratio_to_report(summa) over (partition by managers) dolya 
-from sv where managers = 'РњРёС…Р°Р»РµРІ';
+from sv where managers = 'Михалев';
 
--- РґРѕР»СЏ СЃ РјРµРЅСЊС€РµР№ РёР»Рё СЂР°РІРЅРѕР№ СЃСѓРјРјРѕР№, С‡РµРј Сѓ "С‚РµРєСѓС‰РµРіРѕ":
+-- доля с меньшей или равной суммой, чем у "текущего":
 
 select product, summa, 
 --count(summa) over (partition by managers, product) count_sale, 
 --sum(summa) over (partition by managers) sum_sale, 
 cume_dist() over (partition by managers order by summa) cume_dist 
-from sv where managers = 'РњРёС…Р°Р»РµРІ';
+from sv where managers = 'Михалев';
 
 ---------------------------------
---  РР•Р РђР РҐРР§Р•РЎРљРР• Р—РђРџР РћРЎР«
+--  ИЕРАРХИЧЕСКИЕ ЗАПРОСЫ
 ----------------------------------
 
---  СЃРѕР·РґР°РґРёРј С‚Р°Р±Р»РёС†Сѓ РґР»СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё
+--  создадим таблицу для демонстрации
 --  drop table test_tab
 create table test_tab(
 id     NUMBER,
@@ -139,26 +139,26 @@ coef   NUMBER
 );
 
 Insert all
-into test_tab(id,pid,name,coef) values(1,null,'Р РѕСЃСЃРёСЏ',100)
-into test_tab(id,pid,name,coef) values(2,1,'РњРѕСЃРєРІР°',80)
-into test_tab(id,pid,name,coef) values(3,2,'РџРђРћ РЎР±РµСЂР±Р°РЅРє',50)
-into test_tab(id,pid,name,coef) values(4,1,'Р РѕСЃС‚РѕРІ-РЅР°-Р”РѕРЅСѓ',60)
-into test_tab(id,pid,name,coef) values(5,1,'РљСЂР°СЃРЅРѕРґР°СЂ',60)
-into test_tab(id,pid,name,coef) values(6,4,'"Р“РѕСЂРёР·РѕРЅС‚"',30)
-into test_tab(id,pid,name,coef) values(7,3,'Р®Р¶РЅС‹Р№ РїРѕСЂС‚',30)
-into test_tab(id,pid,name,coef) values(8,3,'Р’Р°РІРёР»РѕРІР°',30)
-into test_tab(id,pid,name,coef) values(9,7,'"РЎСѓРїРµСЂРґРѕРј"',10)
-into test_tab(id,pid,name,coef) values(10,5,'РљСЂР°СЃРЅР°СЏ СѓР»РёС†Р°',10)
-into test_tab(id,pid,name,coef) values(11,9,'Р¦РћР”',5)
-into test_tab(id,pid,name,coef) values(12,6,'РљРёРЅРѕС‚РµР°С‚СЂ "Р“РѕСЂРёР·РѕРЅС‚"',10)
+into test_tab(id,pid,name,coef) values(1,null,'Россия',100)
+into test_tab(id,pid,name,coef) values(2,1,'Москва',80)
+into test_tab(id,pid,name,coef) values(3,2,'ПАО Сбербанк',50)
+into test_tab(id,pid,name,coef) values(4,1,'Ростов-на-Дону',60)
+into test_tab(id,pid,name,coef) values(5,1,'Краснодар',60)
+into test_tab(id,pid,name,coef) values(6,4,'"Горизонт"',30)
+into test_tab(id,pid,name,coef) values(7,3,'Южный порт',30)
+into test_tab(id,pid,name,coef) values(8,3,'Вавилова',30)
+into test_tab(id,pid,name,coef) values(9,7,'"Супердом"',10)
+into test_tab(id,pid,name,coef) values(10,5,'Красная улица',10)
+into test_tab(id,pid,name,coef) values(11,9,'ЦОД',5)
+into test_tab(id,pid,name,coef) values(12,6,'Кинотеатр "Горизонт"',10)
 select * from dual;
 commit;
 
---  РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РґР°РЅРЅС‹Рµ РµСЃС‚СЊ
+--  проверка, что данные есть
 
 select * from test_tab;
 
--- 1 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ СѓР¶Рµ СЃ СЃРѕСЂС‚РёСЂРѕРІРєРѕР№
+-- 1 иерархический запрос уже с сортировкой
 
 SELECT level, id, pid, name
 FROM test_tab
@@ -166,14 +166,14 @@ START WITH pid is null
 CONNECT BY PRIOR  id= pid
 ORDER SIBLINGS BY NAME;
 
--- 1-1 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ
+-- 1-1 иерархический запрос в обратном порядке
 SELECT level, id, pid, name
 FROM test_tab
 START WITH pid= 6
 CONNECT BY  id= PRIOR pid
 ORDER SIBLINGS BY NAME;
 
--- 2 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ - СЃ РѕС‚СЃС‚СѓРїР°РјРё
+-- 2 иерархический запрос - с отступами
 SELECT --level, id, pid, 
        lpad(' ',5*level)||name as TREE
 FROM test_tab
@@ -181,16 +181,16 @@ START WITH pid is null
 CONNECT BY PRIOR  id = pid
 ORDER SIBLINGS BY NAME;
 
--- 3 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ - С‡РµСЂРµР· "/" - РєР°Рє РґР»СЏ РєР°С‚Р°Р»РѕРіРѕРІ
+-- 3 иерархический запрос - через "/" - как для каталогов
 SELECT --level, id, pid, 
        sys_connect_by_path(name,'/')as PATH
 FROM test_tab
-WHERE id=12 -- СѓРєР°Р¶РµРј С‚РѕР»СЊРєРѕ 1 Р·РЅР°С‡РµРЅРёРµ
+WHERE id=12 -- укажем только 1 значение
 START WITH pid is null
 CONNECT BY PRIOR id=pid
 ORDER SIBLINGS BY NAME;
 
--- 4 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ - РІС‹РІРѕРґ СѓСЂРѕРІРЅРµР№, "Р»РёСЃС‚СЊРµРІ" Рё РєРѕСЂРЅРµРІС‹С… Р·РЅР°С‡РµРЅРёР№
+-- 4 иерархический запрос - вывод уровней, "листьев" и корневых значений
 SELECT  id, pid, name, level,
        CONNECT_BY_ISLEAF as ISLEAF,
        PRIOR name as PARENT_NAME,
@@ -201,9 +201,9 @@ START WITH pid is null
 CONNECT BY PRIOR id=pid
 ORDER SIBLINGS BY NAME;
 
--- 5 РёРµСЂР°СЂС…РёС‡РµСЃРєРёР№ Р·Р°РїСЂРѕСЃ - РїРµС‚Р»Рё (С†РёРєР»С‹)
+-- 5 иерархический запрос - петли (циклы)
 
----СЃРѕР·РґР°РµРј РїРµС‚Р»СЋ
+---создаем петлю
 update test_tab set pid=12 where id=4;
 commit;
 
@@ -213,12 +213,12 @@ FROM test_tab
 START WITH id=4
 CONNECT BY NOCYCLE PRIOR id=pid;
 
-----РІРѕР·РІСЂР°С‰Р°РµРј РЅР°Р·Р°Рґ
+----возвращаем назад
 update test_tab set pid=1 where id=4;
 commit;
 
 
--- 6 - РіРµРЅРµСЂР°С†РёСЏ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚РµР№
+-- 6 - генерация последовательностей
       select
         trunc(sysdate,'dd')-1 + level as calc_dt,
         11 -  (level*1) as calc_n_down,
@@ -228,7 +228,7 @@ commit;
         level <= 10;
       
 
----  СЂРµРєСѓСЂСЃРёСЏ WITH 1
+---  рекурсия WITH 1
 
 WITH  step (id,pid,name,coef) AS(
       SELECT id, pid, name, coef
@@ -246,7 +246,7 @@ WITH  step (id,pid,name,coef) AS(
 SELECT id, pid, name, coef from step            
 
 
---- СЂРµРєСѓСЂСЃРёСЏ WITH 2 СЃ РіСЂСѓРїРїРёСЂРѕРІРєРѕР№
+--- рекурсия WITH 2 с группировкой
 
 WITH  step (id,pid,name,coef) AS(
       SELECT id, pid, name, coef
@@ -265,9 +265,9 @@ WITH  step (id,pid,name,coef) AS(
 SELECT id, pid, name, coef, orderv from step            
 ORDER BY orderv
 
----  СЂРµРєСѓСЂСЃРёСЏ WITH СЃ Р·Р°С†РёРєР»РµРЅРѕСЃС‚СЊСЋ РґР°РЅРЅС‹С…
+---  рекурсия WITH с зацикленостью данных
 
----- РЎРѕР·РґР°РµРј  С†РёРєР»
+---- Создаем  цикл
 update test_tab set pid=12 where id=4;
 commit;
 
@@ -290,12 +290,12 @@ WITH  step (id,pid,name,coef) AS(
 SELECT id, pid, name, coef, orderv, cyclem from step            
 ORDER BY orderv 
 
-----   РІРѕР·РІСЂР°С‰Р°РµРј РЅР°Р·Р°Рґ, СѓР±РёСЂР°РµРј С†РёРєР»
+----   возвращаем назад, убираем цикл
 
 update test_tab set pid=1 where id=4;
 commit;
 
----РѕС€РёР±РєР° РїСЂРё С†РёРєР»Рµ
+---ошибка при цикле
 /*      
 ERROR:
 ORA-32044: cycle detected while executing recursive WITH query
@@ -303,47 +303,71 @@ ORA-32044: cycle detected while executing recursive WITH query
 
 
 -------------------------------------
---  Р Р°Р·РІРѕСЂРѕС‚ С‚Р°Р±Р»РёС† PIVOT/UNPIVOT
+--  Разворот таблиц PIVOT/UNPIVOT
 -------------------------------------
 
---- РІС‹Р±РѕСЂРєР°, РЅР°Рґ РєРѕС‚РѕСЂРѕР№ Р±СѓРґРµРј РµРєСЃРїРµСЂРµРјРµРЅС‚РёСЂРѕРІР°С‚СЊ
+--- выборка, над которой будем експерементировать
 
-select * from managers;
-alter table managers add zp number(5);
-update man set zp = 27300, status = 3 where man_id=1;
-update man set zp = 44000 where man_id=2;
-update man set zp = 28200, status = 3 where man_id=3;
-update man set zp = 62000 where man_id=4;
-update man set zp = 43600 where man_id=5;
-update man set zp = 85000 where man_id=6;
+select job, deptno, sum(sal) as ssal from scott.emp group by job, deptno;
 
-select dolgnost, status, sum(zp) as zp from man group by dolgnost, status;
+/*
+    JOB DEPTNO  SSAL
+1 MANAGER 20  2975
+2 PRESIDENT 10  5000
+3 CLERK 10  1300
+4 SALESMAN  30  5600
+5 ANALYST 20  6000
+6 MANAGER 30  2850
+7 MANAGER 10  2450
+8 CLERK 30  950
+9 CLERK 20  1900
 
+*/
 
-----  РІС‹Р±РѕСЂРєР° РѕР±С‹С‡РЅС‹Рј Р·Р°РїСЂРѕСЃРѕРј СЃ РѕРїРµСЂР°С‚РѕСЂРѕРј CASE
+----  выборка обычным запросом с оператором CASE
 
 with ssum as(
-select dolgnost, status, sum(zp) as zp from man group by dolgnost, status
+select job, deptno, sum(sal) as ssal from scott.emp group by job, deptno
 )
-select dolgnost, 
-       sum(case when status = 1 then zp else 0 end) as s_1,
-       sum(case when status = 2 then zp else 0 end) as s_2,
-       sum(case when status = 3 then zp else 0 end) as s_3,
-       sum(case when status = 4 then zp else 0 end) as s_4       
-    from man group by dolgnost;   
+select job, 
+       sum(case when deptno = 10 then ssal else 0 end) as d_10,
+       sum(case when deptno = 20 then ssal else 0 end) as d_20,
+       sum(case when deptno = 30 then ssal else 0 end) as d_30
+    from ssum group by job;   
 
-------   Р’С‹Р±РѕСЂРєР° СЃ PIVOT
+/*
+    JOB D_10  D_20  D_30
+1 CLERK 1300  1900  950
+2 SALESMAN  0 0 5600
+3 PRESIDENT 5000  0 0
+4 MANAGER 2450  2975  2850
+5 ANALYST 0 6000  0
+*/
+
+
+------   Выборка с PIVOT
 
 select * FROM
-(select dolgnost, status, sum(zp) as zp from man group by dolgnost, status)
-pivot (sum(zp) for status in (1,2,3,4));
+(select job, deptno, sum(sal) as ssal from scott.emp group by job, deptno)
+pivot (sum(ssal) for deptno in (10,20,30,40));
+    
+/*
+    JOB 10  20  30  40
+1 CLERK 1300  1900  950 
+2 SALESMAN      5600  
+3 PRESIDENT 5000      
+4 MANAGER 2450  2975  2850  
+5 ANALYST   6000    
+*/
 
-----   Р Р°Р·РІРѕСЂРѕС‚ РЅР°РѕР±РѕСЂРѕС‚ UNPIVOT- РёР· РІС‹Р±РѕСЂРєРё PIVOT
 
-with p_table as(
+----   Разворот наоборот UNPIVOT- из выборки PIVOT
+
+with p_tabl as(
      select * FROM
-            (select dolgnost, status, sum(zp) as zp from man group by dolgnost, status)
-            pivot (sum(zp) for status in (1,2,3))
+            (select job, deptno, sum(sal) as ssal from scott.emp group by job, deptno)
+            pivot (sum(ssal) for deptno in (10,20,30,40))
 )
+
 select * from p_table 
-unpivot exclude nulls (zp for status in ("1","2","3")); -- СЃ РЅСѓР»СЏРјРё: include
+unpivot include nulls (ssal for deptno in (10,20,30))

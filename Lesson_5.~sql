@@ -31,8 +31,8 @@ when not matched then insert
 rollback;
 
 update stepan.prod3
-set product = 'С€С‚СЂРёС…'
-, komment ='Р±РµР»С‹Р№'
+set product = 'штрих'
+, komment ='белый'
 where product_id = 6;
 
 select listagg(komment, '|') from stepan.product;
@@ -134,9 +134,9 @@ select * from stepan.svod;
 drop table stepan.svod;
 
 select 
-sv.managers as "РЎРѕС‚СЂСѓРґРЅРёРє"
-,count(sv.product) "РљРѕР»Р»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґР°Р¶"
-,sum(sv.summa) "РћР±С‰Р°СЏ СЃСѓРјРјР° РїСЂРѕРґР°Р¶"
+sv.managers as "Сотрудник"
+,count(sv.product) "Колличество продаж"
+,sum(sv.summa) "Общая сумма продаж"
 from stepan.svod sv
 where 1=1
 group by sv.managers

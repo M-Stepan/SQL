@@ -1,4 +1,4 @@
---Создание таблиц
+--РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†
 CREATE TABLE product
     ( product_id    NUMBER(6)
     , product       VARCHAR2(30) 
@@ -20,37 +20,37 @@ CREATE TABLE managers
     , status        NUMBER(6)
     ) ;
 
--- Заполнение таблиц
+-- Р—Р°РїРѕР»РЅРµРЅРёРµ С‚Р°Р±Р»РёС†
 
-INSERT INTO product VALUES (1, 'ручка', 'новая');
-INSERT INTO product VALUES (2, 'карандаш', 'старый');
-INSERT INTO product VALUES (3, 'пенал', 'большой');
-INSERT INTO product VALUES (4, 'линейка', 'дерево');
-INSERT INTO product VALUES (5, 'стерка', 'новая');
-INSERT INTO product VALUES (6, 'замазка', 'белая');
-INSERT INTO product VALUES (7, 'циркуль', 'металл');
+INSERT INTO product VALUES (1, 'СЂСѓС‡РєР°', 'РЅРѕРІР°СЏ');
+INSERT INTO product VALUES (2, 'РєР°СЂР°РЅРґР°С€', 'СЃС‚Р°СЂС‹Р№');
+INSERT INTO product VALUES (3, 'РїРµРЅР°Р»', 'Р±РѕР»СЊС€РѕР№');
+INSERT INTO product VALUES (4, 'Р»РёРЅРµР№РєР°', 'РґРµСЂРµРІРѕ');
+INSERT INTO product VALUES (5, 'СЃС‚РµСЂРєР°', 'РЅРѕРІР°СЏ');
+INSERT INTO product VALUES (6, 'Р·Р°РјР°Р·РєР°', 'Р±РµР»Р°СЏ');
+INSERT INTO product VALUES (7, 'С†РёСЂРєСѓР»СЊ', 'РјРµС‚Р°Р»Р»');
 
-INSERT INTO price VALUES (1, 'ручка', 100);
-INSERT INTO price VALUES (2, 'карандаш', 50);
-INSERT INTO price VALUES (3, 'пенал', 350);
-INSERT INTO price VALUES (4, 'линейка', 25.55);
-INSERT INTO price VALUES (5, 'стерка', 33.33);
-INSERT INTO price VALUES (6, 'замазка', 85.5);
+INSERT INTO price VALUES (1, 'СЂСѓС‡РєР°', 100);
+INSERT INTO price VALUES (2, 'РєР°СЂР°РЅРґР°С€', 50);
+INSERT INTO price VALUES (3, 'РїРµРЅР°Р»', 350);
+INSERT INTO price VALUES (4, 'Р»РёРЅРµР№РєР°', 25.55);
+INSERT INTO price VALUES (5, 'СЃС‚РµСЂРєР°', 33.33);
+INSERT INTO price VALUES (6, 'Р·Р°РјР°Р·РєР°', 85.5);
 
-INSERT INTO managers VALUES (1, 'Иванов', 'консультант', 2);
-INSERT INTO managers VALUES (2, 'Петров', 'продавец', 2);
-INSERT INTO managers VALUES (3, 'Сидоров', 'консультант', 2);
-INSERT INTO managers VALUES (4, 'Михалев', 'начальник', 1);
-INSERT INTO managers VALUES (5, 'Васильев', 'продавец', 2);
+INSERT INTO managers VALUES (1, 'РРІР°РЅРѕРІ', 'РєРѕРЅСЃСѓР»СЊС‚Р°РЅС‚', 2);
+INSERT INTO managers VALUES (2, 'РџРµС‚СЂРѕРІ', 'РїСЂРѕРґР°РІРµС†', 2);
+INSERT INTO managers VALUES (3, 'РЎРёРґРѕСЂРѕРІ', 'РєРѕРЅСЃСѓР»СЊС‚Р°РЅС‚', 2);
+INSERT INTO managers VALUES (4, 'РњРёС…Р°Р»РµРІ', 'РЅР°С‡Р°Р»СЊРЅРёРє', 1);
+INSERT INTO managers VALUES (5, 'Р’Р°СЃРёР»СЊРµРІ', 'РїСЂРѕРґР°РІРµС†', 2);
 
--- Добавление ограничений
+-- Р”РѕР±Р°РІР»РµРЅРёРµ РѕРіСЂР°РЅРёС‡РµРЅРёР№
 
 ALTER TABLE price add CONSTRAINT  c_id PRIMARY KEY (product_id);
 ALTER TABLE price add CONSTRAINT c_summ check (summa IS NOT NULL);
 ALTER TABLE price MODIFY product  NOT NULL;
 
 
---Добавление индекса
+--Р”РѕР±Р°РІР»РµРЅРёРµ РёРЅРґРµРєСЃР°
 
 CREATE INDEX idx1 ON product (product_id);
 
@@ -59,6 +59,7 @@ select * from managers;
 select * from price;
 select * from product;
 
+create synonym man for managers;
 select * from man;
 
 truncate table managers;
