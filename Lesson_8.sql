@@ -2,32 +2,32 @@ SELECT * FROM svod;
 SELECT * FROM svod2;
 
 UPDATE svod2 SET summa = NULL
-WHERE managers= 'Èâàíîâ';
+WHERE managers= 'Ð˜Ð²Ð°Ð½Ð¾Ð²';
 
 SELECT * FROM svod2
 WHERE summa IS NULL;
 
--- ñòðîêîâûå ôóíêöèè
+-- ÑÑ‚Ñ€Ð¾ÐºÐ¾Ð²Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 SELECT
-managers "Ìåíåäæåð",
-product "Ïðîäóêò",
-INITCAP(komment) "Êîììåíò 1 çàãëàâíàÿ",
-LOWER(product) "Ïðîäóêò íèæíèé ðåãèñòð",
-UPPER(komment) "Êîììåíò âåðõíèé ðåãèñòð",
-TRIM(BOTH 'ÿ' FROM komment) "Êîììåíò îáðåçêà 'ÿ'",
-summa "Ñóììà",
-nomer "Íîìåð",
-RPAD(LPAD(20-LENGTH(managers),4,'_'),6,'_') "Òî÷êè",
-RPAD(LOWER(managers),(20-LENGTH(managers)),'.')||nomer as "Ìåíåäæåð è íîìåð ÷åðåç òî÷êè",
-REPLACE(managers, 'â', 'Â') "Ìåíåäæåð çàìåíà 'â' íà 'Â'",
-INITCAP(TRANSLATE(LOWER(managers),'àîåè','îàèå'))  "Ìåíåäæåð ñ çàìåíîé áóêâ",
-INSTR(product,'Å',1,1) "Âõîæäåíèå 'Å'",
-LENGTH(product) "Ïðîäóêò â ñèìâîëàõ",
-LENGTHB(product) "Ïðîäóêò â áàéòàõ",
-LTRIM(managers,'Â') "Ìåíåäæåð óáðàëè 'Â' ñïåðåäè"
+managers "ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€",
+product "ÐŸÑ€Ð¾Ð´ÑƒÐºÑ‚",
+INITCAP(komment) "ÐšÐ¾Ð¼Ð¼ÐµÐ½Ñ‚ 1 Ð·Ð°Ð³Ð»Ð°Ð²Ð½Ð°Ñ",
+LOWER(product) "ÐŸÑ€Ð¾Ð´ÑƒÐºÑ‚ Ð½Ð¸Ð¶Ð½Ð¸Ð¹ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€",
+UPPER(komment) "ÐšÐ¾Ð¼Ð¼ÐµÐ½Ñ‚ Ð²ÐµÑ€Ñ…Ð½Ð¸Ð¹ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€",
+TRIM(BOTH 'Ñ' FROM komment) "ÐšÐ¾Ð¼Ð¼ÐµÐ½Ñ‚ Ð¾Ð±Ñ€ÐµÐ·ÐºÐ° 'Ñ'",
+summa "Ð¡ÑƒÐ¼Ð¼Ð°",
+nomer "ÐÐ¾Ð¼ÐµÑ€",
+RPAD(LPAD(20-LENGTH(managers),4,'_'),6,'_') "Ð¢Ð¾Ñ‡ÐºÐ¸",
+RPAD(LOWER(managers),(20-LENGTH(managers)),'.')||nomer as "ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€ Ð¸ Ð½Ð¾Ð¼ÐµÑ€ Ñ‡ÐµÑ€ÐµÐ· Ñ‚Ð¾Ñ‡ÐºÐ¸",
+REPLACE(managers, 'Ð²', 'Ð’') "ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€ Ð·Ð°Ð¼ÐµÐ½Ð° 'Ð²' Ð½Ð° 'Ð’'",
+INITCAP(TRANSLATE(LOWER(managers),'Ð°Ð¾ÐµÐ¸','Ð¾Ð°Ð¸Ðµ'))  "ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€ Ñ Ð·Ð°Ð¼ÐµÐ½Ð¾Ð¹ Ð±ÑƒÐºÐ²",
+INSTR(product,'Ð•',1,1) "Ð’Ñ…Ð¾Ð¶Ð´ÐµÐ½Ð¸Ðµ 'Ð•'",
+LENGTH(product) "ÐŸÑ€Ð¾Ð´ÑƒÐºÑ‚ Ð² ÑÐ¸Ð¼Ð²Ð¾Ð»Ð°Ñ…",
+LENGTHB(product) "ÐŸÑ€Ð¾Ð´ÑƒÐºÑ‚ Ð² Ð±Ð°Ð¹Ñ‚Ð°Ñ…",
+LTRIM(managers,'Ð’') "ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€ ÑƒÐ±Ñ€Ð°Ð»Ð¸ 'Ð’' ÑÐ¿ÐµÑ€ÐµÐ´Ð¸"
 from svod2;
 
---  ðåãóëÿðíûå âûðàæåíèÿ
+--  Ñ€ÐµÐ³ÑƒÐ»ÑÑ€Ð½Ñ‹Ðµ Ð²Ñ‹Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ
 
 SELECT
 regexp_substr('"26.07.2001","Num":"7656565956","status":"H","', '"Num":"[[:digit:]]{10}"') as reg_substr
@@ -37,7 +37,7 @@ then 'Yes' else 'No' end as reg_instr
 ,regexp_replace('GFyYTfytt ytYt ythsjf ttddase','h|s|f','W') as reg_repl
 FROM dual;
 
--- ÷èñëîâûå ôóíêöèè
+-- Ñ‡Ð¸ÑÐ»Ð¾Ð²Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 
 SELECT
   FLOOR(-6.8) as floor
@@ -50,7 +50,7 @@ SELECT
  ,TO_NUMBER('432343.34','999999.99') as nn
 FROM dual;
 
--- ôóíêöèè ñ äàòîé
+-- Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ñ Ð´Ð°Ñ‚Ð¾Ð¹
 
 SELECT 
   ADD_MONTHS('01.02.2000',5) as new_mon
@@ -62,19 +62,19 @@ SELECT
  ,SYSDATE
 FROM dual;
 
-------- ðàñ÷åò ñòàæà ----
+------- Ñ€Ð°ÑÑ‡ÐµÑ‚ ÑÑ‚Ð°Ð¶Ð° ----
 
 WITH d AS (
      SELECT sysdate d2
            ,to_date('13.02.2012') d1
      FROM dual
      )
-  SELECT FLOOR(MONTHS_BETWEEN(d2,d1)/12) YY  -- êîëè÷åñòâî ëåò
-        ,FLOOR(MOD(MONTHS_BETWEEN(d2,d1),12)) MM -- êîëè÷åñòâî ìåñÿöåâ
-        ,TRUNC(d2-ADD_MONTHS(d1,FLOOR(MONTHS_BETWEEN(d2,d1))),0) DD  -- êîëè÷åñòâî äíåé
+  SELECT FLOOR(MONTHS_BETWEEN(d2,d1)/12) YY  -- ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð»ÐµÑ‚
+        ,FLOOR(MOD(MONTHS_BETWEEN(d2,d1),12)) MM -- ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¼ÐµÑÑÑ†ÐµÐ²
+        ,TRUNC(d2-ADD_MONTHS(d1,FLOOR(MONTHS_BETWEEN(d2,d1))),0) DD  -- ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð´Ð½ÐµÐ¹
      FROM d;
      
-------- âñïîìîãàòåëüíûå ôóíêöèè ñðàâíåíèÿ
+------- Ð²ÑÐ¿Ð¾Ð¼Ð¾Ð³Ð°Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ ÑÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ñ
 
 SELECT
    COALESCE(null,2,null,3,4) as col
@@ -90,10 +90,10 @@ SELECT
 FROM dual
 
 -------------------------------
---     Ñåêöèîíèðîâàíèå òàáëèö â Oracle
+--     Ð¡ÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ† Ð² Oracle
 ----------------------------
 
-----ðàçäåëåíèå ïî äèàïàçîíó
+----Ñ€Ð°Ð·Ð´ÐµÐ»ÐµÐ½Ð¸Ðµ Ð¿Ð¾ Ð´Ð¸Ð°Ð¿Ð°Ð·Ð¾Ð½Ñƒ
 
 CREATE TABLE sales_range 
 (salesman_id  NUMBER(5), 
@@ -108,7 +108,7 @@ PARTITION sales_mar2000 VALUES LESS THAN(TO_DATE('01/04/2000','DD/MM/YYYY')),
 PARTITION sales_apr2000 VALUES LESS THAN(TO_DATE('01/05/2000','DD/MM/YYYY'))
 );
 
------  ðàçáèåíèå ïî ñïèñêó
+-----  Ñ€Ð°Ð·Ð±Ð¸ÐµÐ½Ð¸Ðµ Ð¿Ð¾ ÑÐ¿Ð¸ÑÐºÑƒ
 
 CREATE TABLE sales_list
 (salesman_id  NUMBER(5), 
@@ -124,7 +124,7 @@ PARTITION sales_central   VALUES  ('Texas', 'Illinois'),
 PARTITION sales_other   VALUES  (DEFAULT)
 );
 
--------  õýø-ñåêöèîíèðîâàíèå
+-------  Ñ…ÑÑˆ-ÑÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ
 
 CREATE TABLE sales_hash
 (salesman_id  NUMBER(5), 
@@ -136,7 +136,7 @@ PARTITIONS 4
 STORE IN (data1, data2, data3, data4);
 
 
--------- ñîñòàâíîå ñåêöèîíèðîâàíèå  äèàïàçîíà-õýøà 
+-------- ÑÐ¾ÑÑ‚Ð°Ð²Ð½Ð¾Ðµ ÑÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ  Ð´Ð¸Ð°Ð¿Ð°Ð·Ð¾Ð½Ð°-Ñ…ÑÑˆÐ° 
 
 CREATE TABLE sales_composite 
 (salesman_id  NUMBER(5), 
@@ -156,7 +156,7 @@ SUBPARTITION sp4 TABLESPACE data4)
    PARTITION sales_apr2000 VALUES LESS THAN(TO_DATE('01/05/2000','DD/MM/YYYY'))
    PARTITION sales_may2000 VALUES LESS THAN(TO_DATE('01/06/2000','DD/MM/YYYY')));
 
--------- ñîñòàâíîå ñåêöèîíèðîâàíèå  Range-List 
+-------- ÑÐ¾ÑÑ‚Ð°Ð²Ð½Ð¾Ðµ ÑÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ  Range-List 
 
 CREATE TABLE bimonthly_regional_sales
 (deptno NUMBER, 
@@ -175,7 +175,7 @@ SUBPARTITION central VALUES('IL', 'TX', 'MO') TABLESPACE ts3)
   PARTITION mayjun_2000 VALUES LESS THAN (TO_DATE('1-JUL-2000','DD-MON-YYYY')) );
 
 
------Ïðèìåð ñîçäàíèÿ èíäåêñà: Ñòàðòîâàÿ òàáëèöà, èñïîëüçóåìàÿ äëÿ ïðèìåðîâ
+-----ÐŸÑ€Ð¸Ð¼ÐµÑ€ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð¸Ð½Ð´ÐµÐºÑÐ°: Ð¡Ñ‚Ð°Ñ€Ñ‚Ð¾Ð²Ð°Ñ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ð°, Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼Ð°Ñ Ð´Ð»Ñ Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ð¾Ð²
 CREATE TABLE employees
 (employee_id NUMBER(4) NOT NULL,
  last_name VARCHAR2(10), 
@@ -185,20 +185,20 @@ PARTITION BY RANGE (department_id)
  PARTITION employees_part2 VALUES LESS THAN (21) TABLESPACE part2, 
  PARTITION employees_part3 VALUES LESS THAN (31) TABLESPACE part3);
 
------Ïðèìåð ñîçäàíèÿ ëîêàëüíîãî èíäåêñà
+-----ÐŸÑ€Ð¸Ð¼ÐµÑ€ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð»Ð¾ÐºÐ°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ð¸Ð½Ð´ÐµÐºÑÐ°
 CREATE INDEX employees_local_idx ON employees (employee_id) LOCAL;
 
------Ïðèìåð ñîçäàíèÿ ãëîáàëüíîãî èíäåêñà
+-----ÐŸÑ€Ð¸Ð¼ÐµÑ€ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ð¸Ð½Ð´ÐµÐºÑÐ°
 CREATE INDEX employees_global_idx ON employees(employee_id);
 
------Ïðèìåð ñîçäàíèÿ ãëîáàëüíîãî ñåêöèîíèðîâàííîãî èíäåêñà
+-----ÐŸÑ€Ð¸Ð¼ÐµÑ€ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ ÑÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ð³Ð¾ Ð¸Ð½Ð´ÐµÐºÑÐ°
 CREATE INDEX employees_global_part_idx ON employees(employee_id)
 GLOBAL PARTITION BY RANGE(employee_id)
 (PARTITION p1 VALUES LESS THAN(5000),
  PARTITION p2 VALUES LESS THAN(MAXVALUE));
 
 
-------Ïðèìåð ñîçäàíèÿ ñåêöèîíèðîâàííîé èíäåêñíîîðãàíèçîâàííîé òàáëèöû
+------ÐŸÑ€Ð¸Ð¼ÐµÑ€ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ ÑÐµÐºÑ†Ð¸Ð¾Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ð¹ Ð¸Ð½Ð´ÐµÐºÑÐ½Ð¾Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð¾Ð²Ð°Ð½Ð½Ð¾Ð¹ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹
 CREATE TABLE sales_range (
 salesman_id   NUMBER(5), 
 salesman_name VARCHAR2(30), 
@@ -217,7 +217,7 @@ PARTITION BY RANGE(sales_date)
  PARTITION sales_apr2000 VALUES LESS THAN(TO_DATE('05/01/2000','DD/MM/YYYY'))
  OVERFLOW TABLESPACE p4_overflow);
 
--- ñîçäàíèå òàáëèöû ïîëíîå êîïèðîâàíèå
+-- ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹ Ð¿Ð¾Ð»Ð½Ð¾Ðµ ÐºÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ
 
 CREATE TABLE price1
 AS SELECT * FROM price
@@ -225,7 +225,7 @@ WHERE 1=1;
 
 select * from price1;
 
--- ñîçäàíèå òàáëèöû ïóñòîé
+-- ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹ Ð¿ÑƒÑÑ‚Ð¾Ð¹
 
 CREATE TABLE price2
 AS SELECT * FROM price
@@ -239,7 +239,7 @@ WHERE 1=0;
 
 select * from price3;
 
--- çàïîëíåíèå òàáëèöû
+-- Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹
 
 INSERT FIRST
        WHEN summa >100 THEN
@@ -256,7 +256,7 @@ select p3.*, 'price3' from price3 p3;
 TRUNCATE TABLE price2;
 TRUNCATE TABLE price3;
 
--- çàïîëíåíèå òàáëèöû 2
+-- Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹ 2
 
 INSERT ALL
        WHEN summa >100 THEN
