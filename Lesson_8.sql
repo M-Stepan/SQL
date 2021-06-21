@@ -66,12 +66,12 @@ FROM dual;
 
 WITH d AS (
      SELECT sysdate d2
-           ,sysdate - 899 d1
+           ,to_date('13.02.2012') d1
      FROM dual
      )
   SELECT FLOOR(MONTHS_BETWEEN(d2,d1)/12) YY  -- количество лет
         ,FLOOR(MOD(MONTHS_BETWEEN(d2,d1),12)) MM -- количество месяцев
-        ,d2-ADD_MONTHS(d1,FLOOR(MONTHS_BETWEEN(d2,d1))) DD  -- количество дней
+        ,TRUNC(d2-ADD_MONTHS(d1,FLOOR(MONTHS_BETWEEN(d2,d1))),0) DD  -- количество дней
      FROM d;
      
 ------- вспомогательные функции сравнения
@@ -217,97 +217,54 @@ PARTITION BY RANGE(sales_date)
  PARTITION sales_apr2000 VALUES LESS THAN(TO_DATE('05/01/2000','DD/MM/YYYY'))
  OVERFLOW TABLESPACE p4_overflow);
 
+-- создание таблицы полное копирование
+
+CREATE TABLE price1
+AS SELECT * FROM price
+WHERE 1=1;
+
+select * from price1;
+
+-- создание таблицы пустой
+
+CREATE TABLE price2
+AS SELECT * FROM price
+WHERE 1=0;
+
+select * from price2;
+
+CREATE TABLE price3
+AS SELECT * FROM price
+WHERE 1=0;
+
+select * from price3;
+
+-- заполнение таблицы
+
+INSERT FIRST
+       WHEN summa >100 THEN
+         INTO price2 VALUES (product_id, UPPER(product), summa*2)
+       WHEN summa >99 THEN
+         INTO price3 VALUES (product_id, LOWER(product), summa*3)
+     SELECT * FROM price;
+     
+select p2.*,'price2' as tabl from price2 p2
+UNION ALL
+select p3.*, 'price3' from price3 p3;
 
 
+TRUNCATE TABLE price2;
+TRUNCATE TABLE price3;
 
-
-
-
-
-
-----------------------------------
----
----------------------------------
-
----  создание новой таблицы из старой со всеми ее данными
- CREATE TABLE employees_tmp
-     AS SELECT * FROM hr.employees;
-
-select * from employees_tmp;
-
---===создаем таблицы для наполнения
-CREATE TABLE employees_tmp1
-     AS SELECT * FROM hr.employees
-  WHERE 1=0;
-
-select * from employees_tmp1;
-
-CREATE TABLE employees_tmp2
-     AS SELECT * FROM hr.employees
-  WHERE 1=0;
-
-select * from employees_tmp2;
-
-CREATE TABLE employees_tmp3
-     AS SELECT * FROM hr.employees
-  WHERE 1=0;
-
-select * from employees_tmp3;
-
----  создание новой таблицы из старой с ограничениями и конвертацией
-
-CREATE TABLE EMPLOYEES_TMP 
-AS SELECT h.employee_id,
-          h.first_name,
-          h.last_name,
-          LOWER(h.email) as email,
-          h.phone_number,
-          h.hire_date,
-          h.job_id,
-          h.salary + 500 as salary,
-          h.commission_pct,
-          h.manager_id,
-          CASE WHEN h.department_id=100 
-            THEN 200 ELSE
-                h.department_id END as department_id
-FROM HR.EMPLOYEES h
-where h.department_id = 100;
-
-
--------  догружаем в нее же еще данные
-
-INSERT INTO EMPLOYEES_tmp
-SELECT h.employee_id,
-          h.first_name,
-          h.last_name,
-          LOWER(h.email) as email,
-          h.phone_number,
-          h.hire_date,
-          h.job_id,
-          h.salary + 400 as salary,
-          h.commission_pct,
-          h.manager_id,
-          CASE WHEN h.department_id=80 
-            THEN 280 ELSE
-                h.department_id END as department_id
-FROM HR.EMPLOYEES h
-WHERE h.department_id = 80;
-
-                
+-- заполнение таблицы 2
 
 INSERT ALL
-   WHEN department_id < 40 THEN
-      INTO employees_tmp1
-         VALUES(employee_id, first_name, last_name, LOWER(email), phone_number, hire_date,
-              job_id, salary + 100, commission_pct, manager_id, department_id)
-   WHEN department_id > 40 and department_id < 100 THEN
-      INTO employees_tmp2
-         VALUES(employee_id, first_name, last_name, LOWER(email), phone_number, hire_date,
-              job_id, salary + 300 , commission_pct, manager_id, department_id)   
-   ELSE
-      into employees_tmp3
- VALUES(employee_id, first_name, last_name, UPPER(email), phone_number, hire_date,
-              job_id, salary + 500, commission_pct, manager_id, department_id) 
-SELECT employee_id, first_name, last_name, email, phone_number, hire_date,
-              job_id, salary, commission_pct, manager_id, department_id
-      FROM hr.employees;
+       WHEN summa >100 THEN
+         INTO price2 VALUES (product_id, UPPER(product), summa*2)
+       WHEN summa >99 THEN
+         INTO price3 VALUES (product_id, LOWER(product), summa*3)
+     SELECT * FROM price;
+     
+select p2.*,'price2' as tabl from price2 p2
+UNION ALL
+select p3.*, 'price3' from price3 p3;
